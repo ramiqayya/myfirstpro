@@ -68,7 +68,7 @@ TEMPLATES = [
         },
     },
 ]
-
+AUTH_USER_MODEL = 'exams.User'
 WSGI_APPLICATION = 'exams_app.wsgi.application'
 
 
