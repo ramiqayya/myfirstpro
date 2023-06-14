@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("<button>Hello world</button>")
+    return render(request, "exams/home.html")
 
 
 def takeha(request, andy):
