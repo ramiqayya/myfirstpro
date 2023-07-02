@@ -3,9 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from .forms import QuestionForm, ChoiceForm
+from django import forms
+from django.utils.datastructures import MultiValueDictKeyError
+
 
 # Create your views here.
-from .models import User
+from .models import User, Question, Choice
 from django.db import IntegrityError
 
 
@@ -32,6 +36,64 @@ def login_view(request):
             })
     else:
         return render(request, "exams/login.html")
+
+
+def profile(request):
+
+    question = Question.objects.order_by('?')[0]
+    choices = Choice.objects.filter(question=question)
+    print(choices.filter(is_correct=True))
+    if request.method == "POST":
+
+        try:
+            zafaste = request.POST["takeha"]
+            print(zafaste)
+
+            question = Question.objects.order_by('?')[0]
+            choices = Choice.objects.filter(question=question)
+        except MultiValueDictKeyError:
+            return render(request, "exams/profile.html", {
+                "error": "Boht Moskel choose something",
+
+
+
+            })
+
+        return render(request, "exams/profile.html", {
+            "message": "Ich bin du",
+            "question": question,
+            "choices": choices
+
+
+        })
+
+    # questions = {"question1": "why like this?",
+    #              "choice 1": {
+    #                  "answer": "ich bin du",
+    #                  "isCorrect": True
+    #              },
+    #              "choice 2": {
+    #                  "answer": "Takeha",
+    #                  "isCorrect": False
+    #              },
+    #              "choice 3": {
+    #                  "answer": "Sawade ka",
+    #                  "isCorrect": False
+    #              },
+    #              "choice 4": {
+    #                  "answer": "Danti",
+    #                  "isCorrect": False
+    #              },
+
+    #              }
+
+    return render(request, "exams/profile.html", {
+        "message": "Ich bin du",
+        "question": question,
+        "choices": choices
+
+
+    })
 
 
 def register(request):

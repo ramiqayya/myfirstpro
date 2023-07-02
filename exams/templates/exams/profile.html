@@ -1,0 +1,41 @@
+{% extends 'exams/layout.html'%}
+
+
+{%block body%}
+
+<h1>
+    Willkommen
+
+</h1>
+<h2>{{message}}</h2>
+<h2>Hello {{user.username}}</h2>
+<h2>Your Id is {{user.id}}</h2>
+<h2>Your email is {{user.email}}</h2>
+
+{%if error%}
+
+<h1>{{error}}</h1>
+<a href="{% url 'profile' %}">Back to questions</a>
+
+{%else%}
+
+<form action="{% url 'profile' %}" method="POST">
+    {% csrf_token %}
+    <fieldset>
+
+
+
+
+
+        <legend>{{question}}</legend>
+        {%for choice in choices%}
+        <div>
+            <input type="radio" id="choice{{forloop.counter}}" name="takeha" value="{{choice}}">
+            <label for="choice{{forloop.counter}}">{{forloop.counter}} - {{choice}} </label>
+        </div>
+        {%endfor%}
+    </fieldset>
+    <input type="submit" value="was machst du?">
+</form>
+{%endif%}
+{%endblock%}
