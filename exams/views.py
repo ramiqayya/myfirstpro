@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .forms import QuestionForm, ChoiceForm
@@ -39,33 +40,24 @@ def login_view(request):
 
 
 def profile(request):
+    if request.method == 'POST':
+        question_choices = {}
+        for question in Question.objects.all():
+            choice_id = request.POST.get('question_{}'.format(question.id))
+            if choice_id:
+                question_choices['question_{}'.format(
+                    question.id)] = int(choice_id)
+        request.session['question_choices'] = question_choices
 
-    question = Question.objects.order_by('?')[0]
-    choices = Choice.objects.filter(question=question)
-    print(choices.filter(is_correct=True))
-    if request.method == "POST":
-
-        try:
-            zafaste = request.POST["takeha"]
-            print(zafaste)
-
-            question = Question.objects.order_by('?')[0]
-            choices = Choice.objects.filter(question=question)
-        except MultiValueDictKeyError:
-            return render(request, "exams/profile.html", {
-                "error": "Boht Moskel choose something",
-
-
-
-            })
-
-        return render(request, "exams/profile.html", {
-            "message": "Ich bin du",
-            "question": question,
-            "choices": choices
-
-
-        })
+    questions = Question.objects.all()
+    paginator = Paginator(questions, 1)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(request, "exams/profile.html", {
+        "message": "Ich bin du",
+        "question": questions,
+        "page_obj": page_obj
+    })
 
     # questions = {"question1": "why like this?",
     #              "choice 1": {
@@ -87,14 +79,7 @@ def profile(request):
 
     #              }
 
-    return render(request, "exams/profile.html", {
-        "message": "Ich bin du",
-        "question": question,
-        "choices": choices
-
-
-    })
-
+  
 
 def register(request):
     if request.method == "POST":

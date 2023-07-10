@@ -22,3 +22,9 @@ class Choice(models.Model):
 
     def __str__(self) -> str:
         return self.text
+
+
+class Test(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    test_num = models.CharField(max_length=15)
+    results = models.IntegerField()
